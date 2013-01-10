@@ -25,7 +25,8 @@ function request_by_curl($remote_server){
 // echo "<br>";
 // var_dump($data);
 // echo "start json decode<br>";
-return json_decode($data,true);
+// return $data;
+ return json_decode($data,true);
 // var_dump($data_arr);
 // print_r($data_arr);
 // return $data_arr;
@@ -35,6 +36,9 @@ $URI='find_data';
 $remote_server=MO_URL.$URI;
 // echo $remote_server;
 $arr_result=request_by_curl($remote_server);
+// var_dump($arr_result);
+//categories=check_time,item_id=name,cur_online=name
+// json_decode
 // print_r($arr_result);
 
 ?>
