@@ -47,6 +47,7 @@ $arr_render_data=array(
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Refresh" content="120">
 <title>游戏实时在线人数</title>
 
 <script type="text/javascript" src="./js/jquery.min.js"></script>

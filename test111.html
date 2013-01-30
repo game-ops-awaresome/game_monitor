@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title> </title>
+		<script type="text/javascript" src="../Scripts/jquery-1.4.1.js"></script>
+        <script type="text/javascript" src="highcharts.js"></script>
+	
+		<script type="text/javascript" src="modules/exporting.js"></script>
+<script type='text/javascript'>  
+    //<![CDATA[   
+    $(function(){  
+                 //声明报表对象  
+        var chart = new Highcharts.Chart({  
+            chart: {  
+                //将报表对象渲染到层上  
+            renderTo: 'container'  
+        },  
+                //设定报表对象的初始数据  
+        series: [{  
+            data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]          
+        }]  
+    });  
+  
+        function getForm(){  
+                                                //使用JQuery从后台获取JSON格式的数据  
+            jQuery.getJSON('http://10.48.179.115:88/find_data', null, function(data) {  
+                                                                //为图表设置值 
+				alter('get');																
+                chart.series[0].setData(data);  
+            });  
+        }  
+  
+      
+        $(document).ready(function() {  
+            //每隔3秒自动调用方法，实现图表的实时更新  
+            window.setInterval(getForm,3000);   
+              
+        });  
+      
+  
+    });  
+    //]]>   
+    </script>  
+</head>
+
+<body>
+
+		<!-- 3. Add the container -->
+		<div id="container" style="width: 800px; height: 460px; margin: 0 auto"></div>
+
+</body>
+</html>

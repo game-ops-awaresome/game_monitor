@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title> </title>
+		<script type="text/javascript" src="../Scripts/jquery-1.4.1.js"></script>
+        <script type="text/javascript" src="highcharts.js"></script>
+	
+		<script type="text/javascript" src="modules/exporting.js"></script>
+		<script type="text/javascript">
+            // 
+		    var courseData = new Array(); 
+		    var gasData = new Array(); 
+		    var gasPerKmArray = new Array(); 
+		    var dateArray = new Array();
+
+		    var factoryId; 
+		    var simId; 
+		    var startTime;
+		    var endTime;
+
+		    function onload() {
+
+				// 从url里面获得几个参数
+                 var url = window.location.href;
+		        var paramInfo = url.split("?")[1];
+		        factoryId = paramInfo.split("&")[0].split("=")[1];
+		        simId = paramInfo.split("&")[1].split("=")[1];
+		        startTime = paramInfo.split("&")[2].split("=")[1].split(" ")[0];
+		        endTime = paramInfo.split("&")[3].split("=")[1].split(" ")[0];
+
+                // ajax方¤?法¤?§调ì??用??webservice取¨?得ì?所¨′需¨¨的ì?报à?§表à¨a数oy据Y
+		        getStart();
+		    }
+
+		    function getStart() {
+
+		        $.ajax({
+		            type: "GET",
+		            contentType: "application/json",
+		            url: "http://localhost:12003/WebS/MyWebService.asmx/getCourse",
+		            data: "{simId:" + simId + ", factoryId:" + factoryId + ", startTime:'" + startTime + "', endTime:'" + endTime + "'}",
+		            dataType: 'json',
+		            timeout: 30000,
+		            success: function (result) {
+
+		                // 返回的数组
+		                courseData = result.d[0];
+		                gasData = result.d[1];
+		                gasPerKmArray = result.d[2];
+		                dateArray = result.d[3];
+
+		                if (typeof (courseData) == "undefined" || typeof (gasData) == "undefined" || typeof (gasPerKmArray) == "undefined") {
+		                    alert("没有取得数据!");
+		                    return;
+		                }
+
+		                creatChart();
+		            },
+		            error: function (XMLHttpRequest, textStatus, errorThrown) {
+		                alert("出错了!");
+		            }
+		        });
+		    };
+
+		    var chart;
+		    function creatChart() {
+
+		        chart = new Highcharts.Chart({
+		            chart: {
+		                renderTo: 'container',
+		                marginRight: 130,
+		                marginBottom: 25
+		            },
+		            title: {
+		                text: '小例子',
+		                x: -20 //center
+		            },
+		            xAxis: {
+		                categories: dateArray
+		            },
+		            yAxis: {
+		                title: {
+		                    text: ''
+		                }
+		            },
+		            subtitle: {
+		                text: "(" + startTime + "～?" + endTime + ")",
+		                x: -20
+		            },
+		            tooltip: {
+		                formatter: function () {
+		                    return '' +this.series.name + ': ' + this.y + '';
+		                }
+		            },
+		            legend: {
+		                layout: 'vertical',
+		                align: 'right',
+		                verticalAlign: 'top',
+		                x: -10,
+		                y: 100,
+		                borderWidth: 0
+		            },
+
+		            series: [{
+		                name: '数值1',
+		                data: courseData
+		            }, {
+		                name: '数值2,
+		                data: gasData
+		            }, {
+		                name: '数值3',
+		                data: gasPerKmArray
+                    }]
+		        });
+		    }
+				
+		</script>
+		
+	</head>
+	<body onload="onload()">
+		<!-- 3. Add the container -->
+		<div id="container" style="width: 800px; height: 460px; margin: 0 auto"></div>
+	</body>
+</html>
