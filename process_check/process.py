@@ -5,6 +5,7 @@ import pscheck
 #print 'sections : ', secs
 print os.getcwd()
 logdir = os.getcwd()+'/logs'
+work_dir = os.getcwd()
 if os.path.exists(logdir):
     print logdir+" is exsit"
 else:
@@ -14,6 +15,7 @@ logfile = logdir+'/check.log'
 
 while 1:
     f = open(logfile,'a')
+    os.chdir(work_dir)
     cf = ConfigParser.ConfigParser()
     cf.read("process.conf")
     secs = cf.sections()
