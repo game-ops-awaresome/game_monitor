@@ -5,29 +5,30 @@ import os,time,socket,sys,re
 def check_process_status(local_dir,exe,port = '',is_game = '0'):
 
     local_time= time.strftime('%Y-%m-%d %H:%m:%S',time.localtime(time.time()))
-    cmd_tasklist= 'tasklist /FO table /NH |findstr "'+ exe +'"'
+    cmd_tasklist= 'tasklist /NH  /FO CSV /FI "IMAGENAME eq '+ exe +'"'
     #print cmd_tasklist
     rel = os.popen(cmd_tasklist).read()
-
+    list_rel = rel.split('","')
+    #print "lenth : "+str(len(list_rel))
     #判断是否传端口
     if port:
         cmd_netstat = 'netstat -ano |findstr "LISTENING"|findstr ":'+ str(port) +'"'
         #print cmd_netstat
         rel_net = os.popen(cmd_netstat).read()
-        if not rel_net or not rel or rel.split()[1] != rel_net.split()[4]:
+        if len(list_rel)<5 or not rel or list_rel[1] != rel_net.split()[4]:
             log_str = local_time+" "+"there is no rel , so start up process: "+exe
             start_process(local_dir,exe)
         else:
-            log_str = local_time+" "+exe+" process running,pid is : "+ rel.split()[1]
+            log_str = local_time+" "+exe+" process running,pid is : "+ list_rel[1]+" 内存使用："+list_rel[4]
             if is_game == '1':
-                #print check_game_online('127.0.0.1',port)
-                log_str += " and online num:"+check_game_online('127.0.0.1',port)
+                on_num=check_game_online('127.0.0.1',port)
+                log_str += " 在线人数:"+on_num
     else:
-        if not rel:
+        if len(list_rel)<5 or not rel:
             log_str = local_time+" "+"there is no rel , so start up process: "+exe
             start_process(local_dir,exe)
         else:
-            log_str = local_time+" "+exe+" process running,pid is : "+ rel.split()[1]
+            log_str = local_time+" "+exe+" process running,pid is : "+ list_rel[1]+" 内存使用："+list_rel[4]
         
     return log_str
     #print rel
@@ -36,6 +37,7 @@ def check_process_status(local_dir,exe,port = '',is_game = '0'):
 
 
 def start_process(local_dir,exe):
+    os.popen("taskkill /IM "+exe)
     os.chdir(local_dir)
     os.popen("start "+exe)
 
